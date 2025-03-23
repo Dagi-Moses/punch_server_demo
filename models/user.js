@@ -21,24 +21,7 @@ const userSchema = new mongoose.Schema({
     unique: true,
   },
 
-  Image: {
-    type: Buffer, // Store compressed image as a Buffer
-    set: (value) => {
-      // Automatically convert Base64 string to Buffer
-      if (typeof value === "string") {
-        return Buffer.from(value, "base64");
-      }
-      return value;
-    },
-    get: (value) => {
-      // Automatically convert Buffer to Base64 string
-      if (value) {
-        return value.toString("base64");
-      }
-      return null;
-    },
-  }, // Store compressed image
-  Description: String, // Description fo
+  
 });
 
 

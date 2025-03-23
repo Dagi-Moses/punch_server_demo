@@ -1,13 +1,18 @@
-import mongoose from "mongoose";
-import { faker } from "@faker-js/faker";
-import Company from "./models/Anniversary.js"; // Adjust path if needed
 
+require("dotenv").config(); 
+const mongoose = require("mongoose");
+const { faker } = require("@faker-js/faker");
+const Company = require("../models/company"); // Update with actual model path
+const CompanyExtra = require("../models/companyExtra"); // Update with actual model path
 
 // Connect to MongoDB
 mongoose
-  .connect(process.env.MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true })
-  .then(() => console.log("Connected to MongoDB"))
-  .catch((err) => console.error("MongoDB connection error:", err));
+  .connect(process.env.MONGO_URI, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  })
+  .then(() => console.log("✅ Connected to MongoDB"))
+  .catch((err) => console.error("❌ MongoDB connection error:", err));
 
 // Function to generate fake company data
 const generateCompanyData = (id) => ({
@@ -24,20 +29,40 @@ const generateCompanyData = (id) => ({
   Description: faker.lorem.sentence(),
 });
 
-// Insert fake companies into the database
+// Function to generate corresponding CompanyExtra data
+const generateCompanyExtraData = (companyNo) => ({
+  Company_No: companyNo,
+  Managing_Director: faker.person.fullName(),
+  Corporate_Affairs: faker.person.fullName(),
+  Media_Manager: faker.person.fullName(),
+  Friends: faker.company.name(),
+  Competitors: faker.company.name(),
+  Directors: faker.person.fullName(),
+});
+
+// Insert fake companies and corresponding company extras
 const seedCompanies = async () => {
   try {
-    await Company.deleteMany(); // Clear existing data
+    await Company.deleteMany(); // Clear existing company data
+    await CompanyExtra.deleteMany(); // Clear existing company extra data
+
     const companies = Array.from({ length: 20 }, (_, i) =>
       generateCompanyData(i + 1)
     );
     await Company.insertMany(companies);
-    console.log("✅ Successfully seeded companies!");
+
+    const companyExtras = companies.map((company) =>
+      generateCompanyExtraData(company.Company_No)
+    );
+    await CompanyExtra.insertMany(companyExtras);
+
+    console.log("✅ Successfully seeded companies and company extras!");
   } catch (err) {
-    console.error("Seeding error:", err);
+    console.error("❌ Seeding error:", err);
   } finally {
     mongoose.connection.close(); // Close connection after seeding
   }
 };
 
+// Run the seeding function
 seedCompanies();

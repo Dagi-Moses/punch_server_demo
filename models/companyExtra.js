@@ -15,8 +15,12 @@ const companyExtraSchema = new mongoose.Schema({
   Directors: String,
 });
 
-module.exports = mongoose.model(
+
+
+
+const CompanyExtra = mongoose.model(
   "CompanyExtra",
   companyExtraSchema,
   "company_extra"
 );
+module.exports = CompanyExtra;
