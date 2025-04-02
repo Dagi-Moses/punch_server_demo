@@ -25,10 +25,6 @@ const userSchema = new mongoose.Schema({
 });
 
 
-// Ensure virtuals are included in JSON responses
-userSchema.set("toJSON", { getters: true });
-userSchema.set("toObject", { getters: true });
-
 const User = mongoose.model("User", userSchema, "user");
 
 module.exports = User;
